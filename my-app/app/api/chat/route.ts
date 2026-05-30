@@ -6,12 +6,17 @@ export async function POST(req: Request) {
   try {
     const { messages, pdfText } = await req.json();
 
+    // System prompt (with optional PDF context)
     const systemPrompt = pdfText
       ? `You are a helpful SaaS customer support assistant. Use this document as context:\n\n${pdfText}`
       : "You are a helpful SaaS customer support assistant. Be clear, professional, and helpful.";
 
-    const userMessage = messages[messages.length - 1]?.content || "";
+    // Get last user message
+    const userMessage = messages?.length
+      ? messages[messages.length - 1].content
+      : "";
 
+    // Call Hugging Face model
     const response = await fetch(
       "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2",
       {
@@ -33,18 +38,24 @@ export async function POST(req: Request) {
 
     const data = await response.json();
 
+    // Handle Hugging Face errors
+    if (data?.error) {
+      return NextResponse.json({
+        reply: `Error from model: ${data.error}`,
+      });
+    }
+
+    // Extract response safely
     const text =
       data?.[0]?.generated_text ||
       data?.generated_text ||
       "Sorry, I couldn't generate a response.";
 
-    // Simulated streaming (Hugging Face does NOT stream natively)
+    // Simulated streaming response (typing effect)
     const stream = new ReadableStream({
       start(controller) {
         const encoder = new TextEncoder();
-
         const words = text.split(" ");
-
         let i = 0;
 
         const interval = setInterval(() => {
@@ -59,7 +70,7 @@ export async function POST(req: Request) {
             clearInterval(interval);
             controller.close();
           }
-        }, 30); // typing speed
+        }, 25); // typing speed
       },
     });
 
@@ -70,8 +81,8 @@ export async function POST(req: Request) {
       },
     });
   } catch (err: any) {
-    return new Response(
-      JSON.stringify({ error: err.message }),
+    return NextResponse.json(
+      { error: err.message || "Internal server error" },
       { status: 500 }
     );
   }
