@@ -2,17 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    // Dynamically import pdf-parse safely
-    const pdf = await import("pdf-parse").then(m => m.default ?? m);
+    // SAFE import for Cloudflare + Next.js
+    const pdfParseModule = await import("pdf-parse");
+    const pdf = pdfParseModule.default || pdfParseModule;
 
-    const arrayBuffer = await req.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    const buffer = Buffer.from(await req.arrayBuffer());
 
     const result = await pdf(buffer);
 
-    return NextResponse.json({ text: result.text });
-  } catch (error) {
-    console.error("PDF ERROR:", error);
-    return NextResponse.json({ error: "PDF parsing failed" }, { status: 500 });
+    return NextResponse.json({
+      text: result.text,
+    });
+  } catch (err) {
+    console.error(err);
+
+    return NextResponse.json(
+      { error: "PDF parsing failed" },
+      { status: 500 }
+    );
   }
 }
