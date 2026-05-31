@@ -1,5 +1,9 @@
-import { redirect } from "next/navigation";
-
 export default function Home() {
-  redirect("/dashboard");
+  return (
+    <main>
+      <h1>Welcome</h1>
+      <p>Redirecting to dashboard...</p>
+      <a href="/dashboard">Go to dashboard</a>
+    </main>
+  );
 }
