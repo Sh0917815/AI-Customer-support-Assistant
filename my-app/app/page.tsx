@@ -1,9 +1,19 @@
+"use client";
+
+import { useEffect } from "react";
+
 export default function Home() {
+  useEffect(() => {
+    window.location.replace("/dashboard");
+  }, []);
+
   return (
     <main>
-      <h1>Welcome</h1>
       <p>Redirecting to dashboard...</p>
-      <a href="/dashboard">Go to dashboard</a>
+      <p>
+        If you are not redirected,{" "}
+        <a href="/dashboard">click here</a>.
+      </p>
     </main>
   );
 }
