@@ -1,24 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import pdf from "pdf-parse";
 
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
-    const file = formData.get("file") as File;
+    // Dynamically import pdf-parse (CommonJS module)
+    const pdf = (await import("pdf-parse")).default;
 
-    if (!file) {
-      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
-    }
+    // Get file data from request
+    const arrayBuffer = await req.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const data = await pdf(buffer);
+    // Parse the PDF
+    const result = await pdf(buffer);
 
+    // Return extracted text
     return NextResponse.json({
-      text: data.text,
+      text: result.text,
     });
-  } catch {
+  } catch (error) {
+    console.error("PDF parsing error:", error);
+
     return NextResponse.json(
-      { error: "PDF parsing failed" },
+      { error: "Failed to parse PDF" },
       { status: 500 }
     );
   }
