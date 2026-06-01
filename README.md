@@ -1,50 +1,58 @@
 # 💬 AI Customer Support Assistant (Llama 3)
 
-A modern AI-powered customer support chatbot built using **Next.js (App Router)** and **Llama 3 via Groq API**.  
-It provides intelligent, fast, and human-like responses for customer queries.
+A modern AI-powered customer support chatbot built using **Next.js (App Router)** and **Llama 3 (hosted model)**.  
+It provides fast, intelligent, and human-like responses to customer queries through a clean chat interface.
 
 ---
 
 ## 🎯 Project Overview
 
-This project simulates a real-world **AI customer support system** where users can ask questions and receive instant AI-generated responses powered by **Llama 3**.
+This project simulates a real-world AI customer support system where users can interact with an AI chatbot and receive instant responses powered by Llama 3.
 
-It demonstrates full-stack development using:
-- Frontend (React / Next.js UI)
-- Backend API routes
-- LLM integration (Groq + Llama 3)
+It demonstrates full-stack web development, API routing, and integration of AI models into a web application.
 
 ---
 
 ## ✨ Features
 
-- 💬 Real-time chatbot interface
-- 🤖 Llama 3 AI responses
-- ⚡ Fast API responses using Groq
-- 🧠 Context-aware customer support replies
-- 📱 Clean and responsive UI
-- 🔁 Chat history during session
+- 💬 Real-time chatbot interface  
+- 🤖 Llama 3 AI responses  
+- 🧠 Context-aware replies  
+- 📱 Responsive UI design  
+- 🔁 Session-based chat history  
+- ⚡ Fast user interaction flow  
 
 ---
 
 ## 🧠 Tech Stack
 
+**Frontend**
 - Next.js (App Router)
-- React / TypeScript
-- Groq API (Llama 3 model)
+- React
+- TypeScript
+
+**Backend**
+- Next.js API Routes
 - Node.js
-- CSS / Basic styling
+
+**AI Model**
+- Llama 3 (hosted / online model)
+
+**Styling**
+- CSS
 
 ---
 
 ## 🏗️ Project Structure
+
+
 customer-support-ai/
 │
 ├── app/
 │ ├── page.tsx # Chat UI (Frontend)
 │ └── api/
 │ └── chat/
-│ └── route.ts # Backend API (LLM call)
+│ └── route.ts # Backend API route
 │
 ├── public/
 ├── package.json
@@ -57,62 +65,52 @@ customer-support-ai/
 
 ## ⚙️ How It Works
 
-1. User types a message in the chat UI
-2. Frontend sends request to `/api/chat`
-3. API route sends prompt to Llama 3 (Groq API)
-4. AI generates a response
-5. Response is returned and displayed in UI
+1. User enters a message in the chat interface  
+2. Frontend sends request to `/api/chat`  
+3. Backend processes the request and sends it to Llama 3 (hosted model)  
+4. AI generates a response  
+5. Response is returned and displayed in the UI  
 
 ---
 
-## 🔑 Environment Variables
+## ▶️ Run Locally
 
-Create a `.env.local` file in root:
-
-```env
-GROQ_API_KEY=your_api_key_here
-
-▶️ Run Locally
-1. Install dependencies
-
+### 1. Install dependencies
+```bash
 npm install
-2. Run development server
-
+2. Start development server
 npm run dev
-
 3. Open in browser
 http://localhost:3000
-
 📌 API Route
-
 POST /api/chat
 
-Request Body:
+Request:
 
 {
   "message": "Hello, I need help with my order"
 }
+
 Response:
 
 {
   "reply": "Sure! I'd be happy to help you with your order..."
 }
-
 🚀 Key Highlights
-Full-stack AI chatbot
-Real-world customer support simulation
-Llama 3 integration
+Full-stack AI chatbot application
+Integration of Llama 3 into a web app
+Real-time conversational UI
 Clean Next.js App Router architecture
-Production-ready API structure
+Simple and production-style API structure
 🔮 Future Improvements
-Chat history database (MongoDB / Firebase)
+Persistent chat history (database integration)
 User authentication
-Ticket creation system
 FAQ knowledge base (RAG system)
+Ticket creation system
 Multi-agent support system
 👨‍💻 Author
 
-Built as an AI portfolio project demonstrating full-stack development + LLM integration.
+Built as a portfolio project demonstrating full-stack development + AI integration.
 
 📜 License
 
