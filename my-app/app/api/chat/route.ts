@@ -1,89 +1,71 @@
 export const runtime = "nodejs";
 
-import { NextResponse } from "next/server";
-
 export async function POST(req: Request) {
   try {
     const { messages, pdfText } = await req.json();
 
-    // System prompt (with optional PDF context)
-    const systemPrompt = pdfText
-      ? `You are a helpful SaaS customer support assistant. Use this document as context:\n\n${pdfText}`
-      : "You are a helpful SaaS customer support assistant. Be clear, professional, and helpful.";
-
-    // Get last user message
-    const userMessage = messages?.length
-      ? messages[messages.length - 1].content
-      : "";
-
-    // Call Hugging Face model
-    const response = await fetch(
-      "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.HF_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          inputs: `${systemPrompt}\n\nUser: ${userMessage}\nAssistant:`,
-          parameters: {
-            max_new_tokens: 300,
-            temperature: 0.7,
-            return_full_text: false,
+    const res = await fetch("http://localhost:11434/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "llama3.1",
+        stream: true,
+        messages: [
+          {
+            role: "system",
+            content: pdfText
+              ? `You are a helpful SaaS customer support assistant. Use this document:\n\n${pdfText}`
+              : "You are a helpful SaaS customer support assistant. Be clear and professional.",
           },
-        }),
-      }
-    );
+          ...messages,
+        ],
+      }),
+    });
 
-    const data = await response.json();
+    if (!res.body) return new Response("No stream", { status: 500 });
 
-    // Handle Hugging Face errors
-    if (data?.error) {
-      return NextResponse.json({
-        reply: `Error from model: ${data.error}`,
-      });
-    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
 
-    // Extract response safely
-    const text =
-      data?.[0]?.generated_text ||
-      data?.generated_text ||
-      "Sorry, I couldn't generate a response.";
-
-    // Simulated streaming response (typing effect)
     const stream = new ReadableStream({
-      start(controller) {
-        const encoder = new TextEncoder();
-        const words = text.split(" ");
-        let i = 0;
+      async start(controller) {
+        let buffer = "";
 
-        const interval = setInterval(() => {
-          if (i < words.length) {
-            controller.enqueue(
-              encoder.encode(
-                JSON.stringify({ response: words[i] + " " }) + "\n"
-              )
-            );
-            i++;
-          } else {
-            clearInterval(interval);
-            controller.close();
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+
+          for (const line of lines) {
+            try {
+              const json = JSON.parse(line);
+              const content = json.message?.content;
+
+              if (content) {
+                controller.enqueue(
+                  new TextEncoder().encode(
+                    JSON.stringify({ response: content }) + "\n"
+                  )
+                );
+              }
+            } catch {}
           }
-        }, 25); // typing speed
+        }
+
+        controller.close();
       },
     });
 
     return new Response(stream, {
-      headers: {
-        "Content-Type": "text/plain",
-        "Cache-Control": "no-cache",
-      },
+      headers: { "Content-Type": "text/plain" },
     });
-  } catch (err: any) {
-    return NextResponse.json(
-      { error: err.message || "Internal server error" },
-      { status: 500 }
-    );
+  } catch (err) {
+    return new Response("Server error", { status: 500 });
   }
 }
+    
+ 
