@@ -45,7 +45,7 @@ It demonstrates full-stack web development, API routing, and integration of AI m
 
 ## 🏗️ Project Structure
 
-
+```text
 customer-support-ai/
   app/
     page.tsx        # Chat UI (Frontend)
@@ -57,6 +57,7 @@ customer-support-ai/
   tsconfig.json
   next.config.js
   .gitignore
+```
 
 ---
 
