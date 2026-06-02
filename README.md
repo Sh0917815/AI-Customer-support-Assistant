@@ -47,18 +47,16 @@ It demonstrates full-stack web development, API routing, and integration of AI m
 
 
 customer-support-ai/
-│
-├── app/
-│   ├── page.tsx        # Chat UI (Frontend)
-│   └── api/
-│       └── chat/
-│           └── route.ts  # Backend API route
-│
-├── public/
-├── package.json
-├── tsconfig.json
-├── next.config.js
-└── .gitignore
+  app/
+    page.tsx        # Chat UI (Frontend)
+    api/
+      chat/
+        route.ts    # Backend API route
+  public/
+  package.json
+  tsconfig.json
+  next.config.js
+  .gitignore
 
 ---
 
