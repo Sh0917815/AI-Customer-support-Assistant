@@ -45,20 +45,20 @@ It demonstrates full-stack web development, API routing, and integration of AI m
 
 ## 🏗️ Project Structure
 
-```text
-customer-support-ai/
-  app/
-    page.tsx        # Chat UI (Frontend)
-    api/
-      chat/
-        route.ts    # Backend API route
-  public/
-  package.json
-  tsconfig.json
-  next.config.js
-  .gitignore
-```
 
+```bash
+customer-support-ai/
+├── app/
+│   ├── page.tsx
+│   └── api/
+│       └── chat/
+│           └── route.ts
+├── public/
+├── package.json
+├── tsconfig.json
+├── next.config.js
+└── .gitignore
+```
 ---
 
 ## ⚙️ How It Works
